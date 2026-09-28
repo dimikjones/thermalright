@@ -1,5 +1,7 @@
 :root {
   --qode-thermalright-color: #dfb743;
+  --qode-thermalright-hover-color: #f3d267;
+  --qode-thermalright-border-first: #26262e;
 }
 
 /* header logo start */
@@ -329,6 +331,14 @@
 }
 /* mobile header end */
 
+/* Title area adj. start */
+.qodef-page-title.qodef-title--breadcrumbs {
+  @media only screen and (min-width: 1025px) {
+    padding-top: 120px;
+  }
+}
+/* Title area adj. end */
+
 /* pagination adj. start */
 .qodef-shortcode {
   .qodef-addons-m-pagination {
@@ -413,3 +423,10 @@
   }
 }
 /* CookieYes | GDPR Cookie Consent plugin styling adj. end */
+
+/* Msc. start */
+.wp-block-quote,
+blockquote {
+  color: currentColor;
+}
+/* Msc. end */
