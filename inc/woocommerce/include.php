@@ -109,3 +109,71 @@ if ( ! function_exists( 'thermalright_product_list_item_excerpt' ) ) {
 		}
 	}
 }
+
+if ( ! function_exists( 'thermalright_woo_breadcrumbs_title' ) ) {
+	/**
+	 * Function that overrides WooCommerce breadcrumbs to prepend the shop page link
+	 *
+	 * @param string $wrap_child - breadcrumbs content.
+	 * @param array  $settings   - breadcrumbs settings.
+	 *
+	 * @return string
+	 */
+	function thermalright_woo_breadcrumbs_title( $wrap_child, $settings ) {
+
+		if ( ! function_exists( 'qi_is_woo_page' ) || ! qi_is_woo_page( 'any' ) ) {
+			return $wrap_child;
+		}
+
+		$shop_id    = qi_woo_get_main_shop_page_id();
+		$shop_title = ! empty( $shop_id ) ? get_the_title( $shop_id ) : esc_html__( 'Shop', 'thermalright' );
+		$shop_link  = ! empty( $shop_id ) ? sprintf( $settings['link'], get_permalink( $shop_id ), $shop_title ) : '';
+
+		$wrap_child = '';
+
+		if ( qi_is_woo_page( 'shop' ) ) {
+			$wrap_child .= sprintf( $settings['current_item'], $shop_title );
+
+		} elseif ( qi_is_woo_page( 'category' ) || qi_is_woo_page( 'tag' ) ) {
+			$taxonomy_slug = qi_is_woo_page( 'tag' ) ? 'product_tag' : 'product_cat';
+			$taxonomy      = get_term( get_queried_object_id(), $taxonomy_slug );
+
+			if ( ! empty( $shop_link ) ) {
+				$wrap_child .= $shop_link . $settings['separator'];
+			}
+
+			if ( isset( $taxonomy->parent ) && 0 !== $taxonomy->parent ) {
+				$parent      = get_term( $taxonomy->parent );
+				$wrap_child .= sprintf( $settings['link'], get_term_link( $parent->term_id ), $parent->name ) . $settings['separator'];
+			}
+
+			if ( ! empty( $taxonomy ) ) {
+				$wrap_child .= sprintf( $settings['current_item'], esc_attr( $taxonomy->name ) );
+			}
+
+		} elseif ( qi_is_woo_page( 'single' ) ) {
+			$post_terms = wp_get_post_terms( get_the_ID(), 'product_cat' );
+
+			if ( ! empty( $shop_link ) ) {
+				$wrap_child .= $shop_link . $settings['separator'];
+			}
+
+			if ( ! empty( $post_terms ) ) {
+				$post_term = $post_terms[0];
+
+				if ( isset( $post_term->parent ) && 0 !== $post_term->parent ) {
+					$parent      = get_term( $post_term->parent );
+					$wrap_child .= sprintf( $settings['link'], get_term_link( $parent->term_id ), $parent->name ) . $settings['separator'];
+				}
+
+				$wrap_child .= sprintf( $settings['link'], get_term_link( $post_term ), $post_term->name ) . $settings['separator'];
+			}
+
+			$wrap_child .= sprintf( $settings['current_item'], get_the_title() );
+		}
+
+		return $wrap_child;
+	}
+
+	add_filter( 'qode_essential_addons_filter_breadcrumbs_content', 'thermalright_woo_breadcrumbs_title', 20, 2 );
+}
