@@ -2,6 +2,40 @@
   --qode-thermalright-color: #dfb743;
   --qode-thermalright-hover-color: #f3d267;
   --qode-thermalright-border-first: #26262e;
+  --qode-thermalright-gold-gradient: linear-gradient(
+    135deg,
+    #f5d77f 0%,
+    #dfb743 50%,
+    #a58223 100%
+  );
+}
+
+.qodef-header--standard {
+  #qodef-page-header {
+    &:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      display: block;
+      height: 1px;
+      background-color: rgb(38, 38, 46);
+    }
+  }
+}
+
+#qodef-page-footer-top-area {
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: block;
+    height: 1px;
+    background-color: rgb(38, 38, 46);
+  }
 }
 
 /* header logo start */
@@ -333,8 +367,17 @@
 
 /* Title area adj. start */
 .qodef-page-title.qodef-title--breadcrumbs {
-  @media only screen and (min-width: 1025px) {
-    padding-top: 120px;
+  background: radial-gradient(circle, #dfb7430f 0%, #0000 70%);
+
+  &:after {
+    content: "";
+    background: var(--qode-thermalright-gold-gradient);
+    width: 200px;
+    height: 1px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
   }
 }
 /* Title area adj. end */
