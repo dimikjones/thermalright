@@ -379,6 +379,13 @@
     left: 50%;
     transform: translate(-50%);
   }
+
+  .qodef-breadcrumbs-inner {
+    &.qodef-m-title {
+      display: inline-flex;
+      flex-wrap: wrap;
+    }
+  }
 }
 /* Title area adj. end */
 
