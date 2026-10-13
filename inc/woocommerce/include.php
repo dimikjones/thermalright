@@ -121,38 +121,41 @@ if ( ! function_exists( 'thermalright_woo_breadcrumbs_title' ) ) {
 	 */
 	function thermalright_woo_breadcrumbs_title( $wrap_child, $settings ) {
 
+		if ( ! function_exists( 'qi_is_installed' ) || ! qi_is_installed( 'woocommerce' ) ) {
+			return $wrap_child;
+		}
+
 		if ( ! function_exists( 'qi_is_woo_page' ) || ! qi_is_woo_page( 'any' ) ) {
 			return $wrap_child;
 		}
 
 		$shop_id    = qi_woo_get_main_shop_page_id();
-		$shop_title = ! empty( $shop_id ) ? get_the_title( $shop_id ) : esc_html__( 'Shop', 'thermalright' );
-		$shop_link  = ! empty( $shop_id ) ? sprintf( $settings['link'], get_permalink( $shop_id ), $shop_title ) : '';
+		$shop_title = ! empty( $shop_id ) ? \get_the_title( $shop_id ) : \__( 'Shop', 'thermalright' );
+		$shop_link  = ! empty( $shop_id ) ? sprintf( $settings['link'], \esc_url( \get_permalink( $shop_id ) ), \esc_html( $shop_title ) ) : '';
 
 		$wrap_child = '';
 
 		if ( qi_is_woo_page( 'shop' ) ) {
-			$wrap_child .= sprintf( $settings['current_item'], $shop_title );
+			$wrap_child .= sprintf( $settings['current_item'], \esc_html( $shop_title ) );
 
 		} elseif ( qi_is_woo_page( 'category' ) || qi_is_woo_page( 'tag' ) ) {
 			$taxonomy_slug = qi_is_woo_page( 'tag' ) ? 'product_tag' : 'product_cat';
-			$taxonomy      = get_term( get_queried_object_id(), $taxonomy_slug );
+			$taxonomy      = \get_term( \get_queried_object_id(), $taxonomy_slug );
 
 			if ( ! empty( $shop_link ) ) {
 				$wrap_child .= $shop_link . $settings['separator'];
 			}
 
 			if ( isset( $taxonomy->parent ) && 0 !== $taxonomy->parent ) {
-				$parent      = get_term( $taxonomy->parent );
-				$wrap_child .= sprintf( $settings['link'], get_term_link( $parent->term_id ), $parent->name ) . $settings['separator'];
+				$parent      = \get_term( $taxonomy->parent );
+				$wrap_child .= sprintf( $settings['link'], \esc_url( \get_term_link( $parent->term_id ) ), \esc_html( $parent->name ) ) . $settings['separator'];
 			}
 
 			if ( ! empty( $taxonomy ) ) {
-				$wrap_child .= sprintf( $settings['current_item'], esc_attr( $taxonomy->name ) );
+				$wrap_child .= sprintf( $settings['current_item'], \esc_html( $taxonomy->name ) );
 			}
-
 		} elseif ( qi_is_woo_page( 'single' ) ) {
-			$post_terms = wp_get_post_terms( get_the_ID(), 'product_cat' );
+			$post_terms = \wp_get_post_terms( \get_the_ID(), 'product_cat' );
 
 			if ( ! empty( $shop_link ) ) {
 				$wrap_child .= $shop_link . $settings['separator'];
@@ -162,14 +165,31 @@ if ( ! function_exists( 'thermalright_woo_breadcrumbs_title' ) ) {
 				$post_term = $post_terms[0];
 
 				if ( isset( $post_term->parent ) && 0 !== $post_term->parent ) {
-					$parent      = get_term( $post_term->parent );
-					$wrap_child .= sprintf( $settings['link'], get_term_link( $parent->term_id ), $parent->name ) . $settings['separator'];
+					$parent      = \get_term( $post_term->parent );
+					$wrap_child .= sprintf( $settings['link'], \esc_url( \get_term_link( $parent->term_id ) ), \esc_html( $parent->name ) ) . $settings['separator'];
 				}
 
-				$wrap_child .= sprintf( $settings['link'], get_term_link( $post_term ), $post_term->name ) . $settings['separator'];
+				$wrap_child .= sprintf( $settings['link'], \esc_url( \get_term_link( $post_term ) ), \esc_html( $post_term->name ) ) . $settings['separator'];
 			}
 
-			$wrap_child .= sprintf( $settings['current_item'], get_the_title() );
+			$wrap_child .= sprintf( $settings['current_item'], \esc_html( \get_the_title() ) );
+
+		} elseif ( qi_is_woo_page( 'cart' ) || qi_is_woo_page( 'checkout' ) || qi_is_woo_page( 'account' ) ) {
+			$page_id        = \get_queried_object_id();
+			$page_title     = \get_the_title( $page_id );
+			$endpoint       = is_wc_endpoint_url() ? WC()->query->get_current_endpoint() : '';
+			$endpoint_title = ! empty( $endpoint ) ? WC()->query->get_endpoint_title( $endpoint ) : '';
+
+			if ( ! empty( $endpoint_title ) ) {
+				// Sub-page like My account > Orders or Checkout > Order received.
+				$wrap_child .= sprintf( $settings['link'], \esc_url( \get_permalink( $page_id ) ), \esc_html( $page_title ) ) . $settings['separator'];
+				$wrap_child .= sprintf( $settings['current_item'], \esc_html( $endpoint_title ) );
+			} else {
+				$wrap_child .= sprintf( $settings['current_item'], \esc_html( $page_title ) );
+			}
+		} else {
+			// Fallback so breadcrumbs are never empty on WooCommerce pages.
+			$wrap_child .= sprintf( $settings['current_item'], \esc_html( \get_the_title() ) );
 		}
 
 		return $wrap_child;
