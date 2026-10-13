@@ -117,14 +117,14 @@
   }
 
   .qodef-woo-product-categories {
-    font-weight: 700;
-    color: var(--qode-thermalright-color);
+    font-weight: 700 !important;
+    color: var(--qode-thermalright-color) !important;
     margin: 0;
     text-transform: uppercase;
   }
 
   .qodef-woo-product-content {
-    padding: 22px 12px 12px;
+    padding: 22px 12px 12px !important;
   }
 }
 
