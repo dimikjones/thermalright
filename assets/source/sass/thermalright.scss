@@ -77,6 +77,72 @@
 }
 /* hide button in qi-addons-for-elementor Product List SC end */
 
+/* WooCommerce global start */
+.woocommerce-order-received,
+.woocommerce-order-received {
+  .woocommerce-order {
+    .woocommerce-thankyou-order-received,
+    h2 {
+      color: var(--qode-thermalright-color);
+    }
+  }
+}
+/* WooCommerce global end */
+
+/* Qi Woo product list start */
+.qodef-woo-product-list {
+  .qodef-woo-product-inner {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(38, 38, 46, 0);
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: var(--qode-thermalright-color);
+      .qodef-woo-product-title {
+        color: #1c1c1e;
+      }
+    }
+  }
+
+  .qodef-woo-product-title {
+    color: #5e5e5e;
+    font-weight: 700;
+    transition: color 0.2s ease;
+  }
+
+  .qodef-woo-product-heading {
+    flex-direction: column;
+  }
+
+  .qodef-woo-product-categories {
+    font-weight: 700;
+    color: var(--qode-thermalright-color);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .qodef-woo-product-content {
+    padding: 22px 12px 12px;
+  }
+}
+
+#qodef-woo-page {
+  .price {
+    color: #1c1c1e;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .qodef-woo-product-list {
+    .price {
+      margin: 8px 0;
+    }
+  }
+}
+/* Qi Woo product list end */
+
 /* single product page changes start */
 #qodef-woo-page {
   &.qodef--single {
